@@ -9,6 +9,6 @@ const provedorSchema = new mongoose.Schema(
       }
 )
 
-const historicoTestes = dbinterno.model("provedores",provedorSchema)
+const historicoTestes = dbinterno.model("historicoTestes",provedorSchema)
 
 export default historicoTestes

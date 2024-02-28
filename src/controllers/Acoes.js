@@ -43,12 +43,21 @@ async function cadastrarTeste(dados) {
       console.error(error)
   }
 }
-async function obterCanalProvedor(provedor) {
+async function obterCanalporProvedor(provedor) {
   // Lógica para obter dados do provedor
   const listaProvedor = await provedores.findOne({ Provedor: provedor }).exec();
   return listaProvedor;
 }
-
+async function obterCanalporNumero(numero) {
+  // Lógica para obter dados do provedor
+  const listaProvedor = await provedores.findOne({ numeroTestes: numero }).exec();
+  return listaProvedor;
+}
+async function obterMensagemResposta(provedor,mensagemrecebida) {
+  // Lógica para obter dados do provedor
+  const listaProvedor = await fluxos.findOne({ Provedor: provedor,mensagemProvedor:mensagemrecebida }).exec();
+  return listaProvedor;
+}
 
 class forticsAcoesController {
   //Autenticar Fortics
@@ -292,6 +301,92 @@ class forticsAcoesController {
     return("atualizado")
   };
 */
+static enviarMensagemResposta = async (numero,mensagem) => {
+  let options;
+  try {
+  //console.log("ANALISE DE ATENDIMENTO, RECEBIDO DO PROVEDOR "+provedor)
+  //const dadosbanco = await obterDadosProvedor(provedor)
+  //console.log(dadosbanco)
+  const url = 'http://192.168.210.61:8080/message/sendText/teste';
+
+  const options = {
+      method: 'POST',
+      url,
+      headers: {'apikey':'upcall2021'},
+      data: 
+      {
+        'number': numero,
+        'options': {
+            'delay': 3000,
+            'presence': "composing",
+            'linkPreview': false
+        },
+        'textMessage': {
+            'text': mensagem
+        }
+    },
+    };
+    
+    const response = await axios(options);
+    //console.log(response.data)
+    return response
+
+    
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      console.log("Erro de autenticação. Tentando reautenticar...");
+
+      // Chame sua função de reautenticação aqui
+      await forticsAcoesController.autenticarAtendente(provedor);
+      
+      // Agora tente novamente após reautenticar
+      const responseRetry = await axios(options);
+      console.log( responseRetry.data);
+    }else if(err.response && err.response.status === 404) {
+      console.log("Atendimento inexistente nesse provedor")
+    }
+  
+    //console.log(err);
+    //return err;
+  }
+};
+static consultaProvedor = async (numero) => {
+  let options;
+  try {
+  //console.log("ANALISE DE ATENDIMENTO, RECEBIDO DO PROVEDOR "+provedor)
+  //const dadosbanco = await obterDadosProvedor(provedor)
+  //console.log(dadosbanco)
+  console.log('Consultando provedor pelo numero '+numero)
+  const provedor = await obterCanalporNumero(numero)
+  //console.log(provedor)
+  return provedor.Provedor
+ 
+
+    
+  } catch (err) {
+      console.log(err);
+    //console.log(err);
+    //return err;
+  }
+};
+static consultaMensagemReponder = async (provedor,mensagemrecebida) => {
+  try {
+  //console.log("ANALISE DE ATENDIMENTO, RECEBIDO DO PROVEDOR "+provedor)
+  //const dadosbanco = await obterDadosProvedor(provedor)
+  //console.log(dadosbanco)
+  console.log('Consultando mensagem para enviar como resposta a mensagem"'+mensagemrecebida+'" para o provedor '+provedor)
+  const mensagemenviar = await obterMensagemResposta(provedor,mensagemrecebida)
+  //console.log(provedor)
+  return mensagemenviar.mensagemResposta
+ 
+
+    
+  } catch (err) {
+      console.log(err);
+    //console.log(err);
+    //return err;
+  }
+};
 }
 
 export default forticsAcoesController
