@@ -4,10 +4,11 @@ import {dbinterno} from "../config/dbConnect.js"
 const provedorSchema = new mongoose.Schema(
     {
         Provedor: {type:String},
-        numeroTestes: {type:String}
+        DataTeste: {type:String},
+        StatusTeste: {type:String}
       }
 )
 
-const provedores = dbinterno.model("provedores",provedorSchema)
+const historicoTestes = dbinterno.model("provedores",provedorSchema)
 
-export default provedores
+export default historicoTestes
