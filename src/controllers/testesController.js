@@ -13,7 +13,7 @@ class testesController {
         }
         static cadastrarTeste = async (provedor) => {
             try {
-                var data = new Date()
+                var data = new Date().toLocaleString("pt-BR", {timeZone: "America/Sao_Paulo"})
                 let provedor2 = new historicoTestes({
                     Provedor: provedor,
                     DataTeste: data,
