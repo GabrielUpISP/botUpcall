@@ -4,7 +4,7 @@ import express from "express";
 import forticsAcoesController from "../controllers/Acoes.js";
 import fluxoController from "../controllers/fluxoController.js";
 import provedores from "../models/Provedor.js";
-
+import testesController from "../controllers/testesController.js";
 const router = express.Router();
 
 async function obterDadosProvedor(nomeProvedor) {
@@ -38,12 +38,17 @@ if(tipomsg=='conversation'){
   
 }else if(tipomsg=='buttonsMessage'){
   mensagemRecebida = dadosAtend.data.message.buttonsMessage.contentText
+}else if(tipomsg=='listMessage'){
+  mensagemRecebida = dadosAtend.data.message.listMessage.description
+}else{
+  console.log('Tipo novo de mensagem recebido:' + tipomsg)
 }
 console.log('Mensagem: '+mensagemRecebida)
 const numeroProvedor = dadosAtend.data.key.remoteJid
 
-if (mensagemRecebida=='echo'){
-  const enviamsg = await forticsAcoesController.enviarMensagemResposta(numeroProvedor,mensagemRecebida)
+if (mensagemRecebida=='###TESTE OK###'){
+  const nomeprovedor = await forticsAcoesController.consultaProvedor(numeroProvedor)
+  const enviamsg = await testesController.cadastrarTeste(nomeprovedor)
   console.log(enviamsg)
 }else {
   const nomeprovedor = await forticsAcoesController.consultaProvedor(numeroProvedor)
