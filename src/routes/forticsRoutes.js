@@ -46,7 +46,7 @@ if(tipomsg=='conversation'){
 console.log('Mensagem: '+mensagemRecebida)
 const numeroProvedor = dadosAtend.data.key.remoteJid
 
-if (mensagemRecebida=='###TESTE OK###'){
+if (mensagemRecebida.includes("###TESTE OK###")){
   const nomeprovedor = await forticsAcoesController.consultaProvedor(numeroProvedor)
   const enviamsg = await testesController.cadastrarTeste(nomeprovedor)
   console.log(enviamsg)
