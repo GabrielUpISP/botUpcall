@@ -78,4 +78,11 @@ res.sendStatus(200)
 }
 );
 
+router.post('/buscamsg',async(req,res)=>{
+  const nomeprovedor=req.body.Provedor
+  const mensagemRecebida=req.body.mensagem
+  const mensagemretornar = await forticsAcoesController.consultaMensagemReponder(nomeprovedor,mensagemRecebida)
+  res.send(mensagemretornar)
+})
+
 export default router;
